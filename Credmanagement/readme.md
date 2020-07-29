@@ -31,7 +31,7 @@ kvpename="pe-kv-01"
 mysqlpename="pe-mysql-01"
 mysqluser="mysqladmin"
 mysqlpassword=$(openssl rand -base64 14)
-
+```
 
 1. Create a Resource group for Key vault and MySql
 ```
