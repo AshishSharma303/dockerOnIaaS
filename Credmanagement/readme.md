@@ -29,8 +29,6 @@ vnetname="appvnet"
 subnet="pe"
 vnetrg="app-rg"
 
-kvdnszone="mytestaci01"
-mysqldnszone="eastus2"
 location="eastus2"
 kvpename="pe-kv-01"
 mysqlpename="pe-mysql-01"
