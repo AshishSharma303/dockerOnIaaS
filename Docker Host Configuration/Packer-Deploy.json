@@ -1,0 +1,59 @@
+{
+  "variables": {
+    "clientid": "",
+    "clientsecret": "",
+    "tenantid": "",
+    "subid": "",
+    "managed_image_rg": "",
+    "managed_image_name": "",
+    "vmss_vm_size": "",
+    "src_sig_sub": "",
+    "scr_sig_rg": "",
+    "scr_sig_name": "",
+    "scr_sig_image_name": "",
+    "src_sig_image_version": "",
+    "dst_sig_rg": "",
+    "dst_sig_name": "",
+    "dst_sig_image": "",
+    "dst_sig_version": ""
+  },
+  "builders": [
+    {
+      "type": "azure-arm",
+      "client_id": "{{user `clientid`}}",
+      "client_secret": "{{user `clientsecret`}}",
+      "tenant_id": "{{user `tenantid`}}",
+      "subscription_id": "{{user `subid`}}",
+      "shared_image_gallery": {
+        "subscription": "{{user `src_sig_sub`}}",
+        "resource_group": "{{user `scr_sig_rg`}}",
+        "gallery_name": "{{user `scr_sig_name`}}",
+        "image_name": "{{user `scr_sig_image_name`}}",
+        "image_version": "{{user `src_sig_image_version`}}"
+      },
+      "shared_image_gallery_destination": {
+        "resource_group": "{{user `dst_sig_rg`}}",
+        "gallery_name": "{{user `dst_sig_name`}}",
+        "image_name": "{{user `dst_sig_image`}}",
+        "image_version": "{{user `dst_sig_version`}}",
+        "replication_regions": [
+          "east us 2"
+        ]
+      },
+      "os_type": "Linux",
+      "managed_image_resource_group_name": "{{user `managed_image_rg`}}",
+      "managed_image_name": "{{user `managed_image_name`}}",
+      "location": "East US 2",
+      "vm_size": "{{user `vmss_vm_size`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "scripts": [
+        "HostConfig.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}
