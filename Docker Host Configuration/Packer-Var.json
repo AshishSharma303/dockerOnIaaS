@@ -1,0 +1,19 @@
+{
+	"clientid": "",
+	"clientsecret": "",
+	"tenantid": "",
+	"subid": "",
+	"sig_subid": "",
+	"managed_image_rg": "",
+	"managed_image_name": "",
+	"vmss_vm_size": "",
+	"src_sig_sub": "",
+	"scr_sig_rg": "",
+	"scr_sig_name": "",
+	"scr_sig_image_name": "",
+	"src_sig_image_version": "",
+	"dst_sig_rg": "",
+	"dst_sig_name": "",
+	"dst_sig_image": "",
+	"dst_sig_version": ""
+}
