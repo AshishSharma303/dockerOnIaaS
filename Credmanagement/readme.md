@@ -135,8 +135,5 @@ mysql --host=$mysqlname --user=$dbuser@$(echo $mysqlname | cut -d "." -f 1) --pa
 
 
 ### NOTE
-Azure Container Instance supports Managed Service Identity which can be used to access Key Vault from container run time and fetch the secrets. However, this option is not recommended due to below reasons:
-
-1. Managed Service Identity is not supported with Azure Container Instances deployed inside virtual network.
-2. Azure Container Instance is not a trusted service for Key Vault.Hence it requires Key Vault firewall to be enabled.
+Docker containers support [native-secret-functionality](https://docs.docker.com/engine/swarm/secrets/) but only with Swarm Manager. This POC is executed for stand alone docker containers on VM by inheriting V's managed service identity and Key Vaults.
 
