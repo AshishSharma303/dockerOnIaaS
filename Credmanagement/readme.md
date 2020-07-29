@@ -13,8 +13,13 @@ This document illustrates how to manage and use secrets with Docker containers o
 
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or though local machine connected to the azure subscription to run below AZ cli commands.
-> 2. 
-> 2. Update the values for below variables as required 
+> 2. Azure VM with Docker installed and system managed identitiy enabled. Follow link to deploy Azure VM using packer.
+> 3. Container Image with below components
+> - Mysql client
+> - JQ
+> - curl
+> - Azure MySQL public cert downloaded from [here](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
+> 3. Update the values for below variables as required 
 ```
 rg="dk-poc-01"
 kvname="dk-poc-kv01"
@@ -31,6 +36,8 @@ kvpename="pe-kv-01"
 mysqlpename="pe-mysql-01"
 mysqluser="mysqladmin"
 mysqlpassword=$(openssl rand -base64 14)
+
+vmname="dkvm01"
 ```
 
 1. Create a Resource group for Key vault and MySql
@@ -82,31 +89,50 @@ az network private-dns record-set a add-record -g $rg -z privatelink.vaultcore.a
 
 ```
 
-8. Configure container on IaaS VM to access secrets.
-```
-#login to docker VM via serial console or ssh and connect to the container shell.
-
-
+8. Assign permission to VM managed Identity on Key Vault secrets
 
 ```
-az container exec \
-  --resource-group $rg \
-  --name $aciname --exec-command "/bin/sh"
-```
-
-6. Validate the secrets
-```
-ls /mnt/secrets
-cat /mnt/secrets/username
-cat /mnt/secrets/password
+spID=$(az resource list -n $vmname --query [*].identity.principalId --out tsv)
+az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $spID
 
 ```
-7. Clean-up the resources
+
+9. Configure container on IaaS VM to access secrets.
+
+- login to docker VM via serial console or ssh.
+- Run the container and login to bash shell
+```
+sudo docker run -it myacr01.azurecr.io/samples/demoapp /bin/bash 
+```
+
+- set the required variables inside the container
+```
+kvname="dk-poc-kv01.vault.azure.net"
+mysqlname="dk-poc-mysql-01.mysql.database.azure.com"
+dbusersecret="username"
+dbpasswordsecret="password"
+```
+- Ping Key vault and Mysql DNS names to ensure it is resolving to privte endpoint. Please change the names as required
 
 ```
-az group delete -n $rg --yes
-
+ping $kvname
+ping $mysqlname
 ```
+
+- Get the access token for Key Vault resource using the metadata URL
+```
+token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
+```
+- Fetch the db user name and password from Key vault using the access token
+```
+dbuser=$(curl https://$kvname//secrets/$dbusersecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
+dbpassword=$(curl https://$kvname//secrets/$dbpasswordsecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
+```
+- Connect to mysql PaaS using mysql client
+```
+mysql --host=$mysqlname --user=$dbuser@$(echo $mysqlname | cut -d "." -f 1) --password=$dbpassword --ssl-mode=REQUIRED --ssl-ca=BaltimoreCyberTrustRoot.crt.pem
+```
+
 
 ### NOTE
 Azure Container Instance supports Managed Service Identity which can be used to access Key Vault from container run time and fetch the secrets. However, this option is not recommended due to below reasons:
