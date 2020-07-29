@@ -12,9 +12,9 @@ This document illustrates how to manage and use secrets with Docker containers o
 ![v](/Credmanagement/secretmgmt.PNG)
 
 ## Prerequisites
-> 1. Use Azure cloud PowerShell or though local machine connected to the azure subscription to run below AZ cli commands.
+> 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
 > 2. Azure VM with Docker installed and system managed identitiy enabled. Follow link to deploy Azure VM using packer.
-> 3. Container Image with below components
+> 3. Container Image with below components preinstalled
 > - Mysql client
 > - JQ
 > - curl
@@ -47,7 +47,7 @@ az group create --name $rg --location $location
 
 2. Create a azure DB for mysql in the resource group
 ```
-mysqlid=$(az mysql server create --resource-group $rg --name $mysqlname --location $location --admin-user $mysqluser --admin-password $mysqlpassword --sku-name GP_Gen5_2 --public-network-access "Disabled" --minimal-tls-version TLS1_2 | jq --raw-output -r '.id')
+mysqlid=$(az mysql server create --resource-group $rg --name $mysqlname --location $location --admin-user $mysqluser --admin-password $mysqlpassword --sku-name GP_Gen5_2 --public-network-access "Disabled" | jq --raw-output -r '.id')
 ```
 
 3. Create a private endpoint for mysql server
@@ -135,5 +135,5 @@ mysql --host=$mysqlname --user=$dbuser@$(echo $mysqlname | cut -d "." -f 1) --pa
 
 
 ### NOTE
-Docker containers support [native-secret-functionality](https://docs.docker.com/engine/swarm/secrets/) but only with Swarm Manager. This POC is executed for stand alone docker containers on VM by inheriting V's managed service identity and Key Vaults.
+Docker containers support [native-secret-functionality](https://docs.docker.com/engine/swarm/secrets/) but only with Swarm Manager. This POC is executed for stand alone docker containers on VM by inheriting its managed service identity and use of Key Vaults to manage secrets.
 
