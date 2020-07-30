@@ -124,6 +124,7 @@ sudo docker run -it myacr01.azurecr.io/samples/demoapp /bin/bash
 # saname="dkpocmysa012.file.core.windows.net"
 # sanamesecret="accountname"
 # sakeysecret="accountkey"
+# sharename="appdata"
 ```
 - Ping Key vault and Storage account DNS names to ensure it is resolving to privte endpoint.
 
@@ -138,7 +139,7 @@ ping $saname
 ```
 - Fetch the db user name and password from Key vault using the access token
 ```
-# saname=$(curl https://$kvname//secrets/$sanamesecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
+# sauser=$(curl https://$kvname//secrets/$sanamesecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
 # sakey=$(curl https://$kvname//secrets/$sakeysecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
 ```
 - Connect to mysql PaaS using mysql client

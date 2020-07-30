@@ -19,7 +19,7 @@ This document illustrates how to manage and use secrets with Docker containers o
 > - JQ
 > - curl
 > - Azure MySQL public cert downloaded from [here](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
-> 3. Update the values for below variables as required 
+> 4. Update the values for below variables as required 
 ```
 rg="dk-poc-01"
 kvname="dk-poc-kv01"
@@ -100,38 +100,39 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 - login to docker VM via serial console or ssh.
 - Run the container and login to bash shell
 ```
-sudo docker run -it myacr01.azurecr.io/samples/demoapp /bin/bash 
+~ sudo docker run -it myacr01.azurecr.io/samples/demoapp /bin/bash 
 ```
 
 - set the required variables inside the container
 ```
-kvname="dk-poc-kv01.vault.azure.net"
-mysqlname="dk-poc-mysql-01.mysql.database.azure.com"
-dbusersecret="username"
-dbpasswordsecret="password"
+# kvname="dk-poc-kv01.vault.azure.net"
+# mysqlname="dk-poc-mysql-01.mysql.database.azure.com"
+# dbusersecret="username"
+# dbpasswordsecret="password"
 ```
 - Ping Key vault and Mysql DNS names to ensure it is resolving to privte endpoint. Please change the names as required
 
 ```
-ping $kvname
-ping $mysqlname
+# ping $kvname
+# ping $mysqlname
 ```
 
 - Get the access token for Key Vault resource using the metadata URL
 ```
-token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
+# token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
 ```
 - Fetch the db user name and password from Key vault using the access token
 ```
-dbuser=$(curl https://$kvname//secrets/$dbusersecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
-dbpassword=$(curl https://$kvname//secrets/$dbpasswordsecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
+# dbuser=$(curl https://$kvname//secrets/$dbusersecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
+# dbpassword=$(curl https://$kvname//secrets/$dbpasswordsecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
 ```
 - Connect to mysql PaaS using mysql client
 ```
-mysql --host=$mysqlname --user=$dbuser@$(echo $mysqlname | cut -d "." -f 1) --password=$dbpassword --ssl-mode=REQUIRED --ssl-ca=BaltimoreCyberTrustRoot.crt.pem
+# mysql --host=$mysqlname --user=$dbuser@$(echo $mysqlname | cut -d "." -f 1) --password=$dbpassword --ssl-mode=REQUIRED --ssl-ca=BaltimoreCyberTrustRoot.crt.pem
 ```
 
 
 ### NOTE
-Docker containers support [native-secret-functionality](https://docs.docker.com/engine/swarm/secrets/) but only with Swarm Manager. This POC is executed for stand alone docker containers on VM by inheriting its managed service identity and use of Key Vaults to manage secrets.
+1. For Clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
+2. Docker containers support [native-secret-functionality](https://docs.docker.com/engine/swarm/secrets/) but only with Swarm Manager. This POC is executed for stand alone docker containers on VM by inheriting its managed service identity and use of Key Vaults to manage secrets.
 
