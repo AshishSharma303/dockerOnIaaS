@@ -8,5 +8,5 @@ Azure File Share is service on Storage Sccount which can be used to mount SMB ne
 
 This section covers 2 options to mount Azure File Share on Docker Containers :
 - [Mounting File Share on Container directly](/persistentstorage/azurefileshare/directmount.md)
-- [Mounting File Share on Container via host Bind Mount](/persistentstorage/azurefileshare/mountviahost.md))
+- [Mounting File Share on Container via host Bind Mount](/persistentstorage/azurefileshare/mountviahost.md)
 

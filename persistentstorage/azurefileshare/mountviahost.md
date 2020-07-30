@@ -1,18 +1,11 @@
-# Persistent Storage with Docker - Azure File Share
-s
+# Persistent Storage -Azure File Share directly mounted on Containers
 
 
 
 
 ## Introduction
-Azure File Share is service on Storage accounts which can be used to mount SMB network shares on Azure VMs. In this section, we will see how wec ant mount a persistent storage on a Docker container using Azure File Share.
 
-Azure File Share cn be mounted on Docker container in two ways:
-1. Mounting File Share on VM and mounting VM directory on Container
-2. Mounting File Share directly on Container
-
-In this document, we will cover the second option i.e. Mounting File Share directly on Container in details
-
+In this document, we will demonstrate the steps to mount Azure File on Containers via host using Docker Bind Mount functionality. Use of Bind Mounts to  Azure Managed Disks is covered [in this document](/persistentstorage/azuredisks/readme.md). This covers creation of required azure components and makes use of AZ CLI & bash commands.
 
 
 ![v](/Credmanagement/secretmgmt.PNG)
@@ -20,11 +13,11 @@ In this document, we will cover the second option i.e. Mounting File Share direc
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
 > 2. Azure VM with Docker installed and system managed identitiy enabled. Follow link to deploy Azure VM using packer.
-> 3. Container Image with below components preinstalled
+> 3. Azure VM Image with below components preinstalled
 > - JQ
 > - curl
 > - cifsutil
-> 3. Update the values for below variables as required 
+> 4. Update the values for below variables as required 
 ```
 rg="dk-poc-01"
 kvname="dk-poc-kv02"
@@ -41,7 +34,7 @@ sharename="appdata"
 vmname="dkvm01"
 ```
 
-1. Create a Resource group for Key vault and MySql
+1. Create a Resource group for Key vault ans storage account
 ```
 az group create --name $rg --location $location
 ```
@@ -113,12 +106,9 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 9. Configure container on IaaS VM to map filesahre
 
 - login to docker VM via serial console or ssh.
-- Run the container in privileged modeand login to bash shell
-```
-~ sudo docker run --privileged -it testacr02.azurecr.io/samples/demoapp /bin/bash
-```
 
-- set the required variables inside the container
+
+- set the required variables on the VM
 ```
 # kvname="dk-poc-kv02.vault.azure.net"
 # saname="dkpocmysa012.file.core.windows.net"
@@ -135,37 +125,51 @@ ping $saname
 
 - Get the access token for Key Vault resource using the metadata URL
 ```
-# token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
+~ token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
 ```
 - Fetch the db user name and password from Key vault using the access token
 ```
-# sauser=$(curl https://$kvname//secrets/$sanamesecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
-# sakey=$(curl https://$kvname//secrets/$sakeysecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
+~ sauser=$(curl https://$kvname//secrets/$sanamesecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
+~ sakey=$(curl https://$kvname//secrets/$sakeysecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
 ```
-- create a cred file by running below
+- create a folder and cred file in it
 ```
-# cat << EOF > /etc/smb.cred
-  username=$sauser
-  password=$sakey
-  EOF
+~  mkdir /etc/credfolder
+
+~ cat << EOF | sudo tee -a /etc/credfolder/smb.cred
+username=$sauser
+password=$sakey
+EOF
+
+~ sudo chmod 600 /etc/credfolder/smb.cred
 
 ```
-- Mount the share on required directory on Container
+- Create a folder to mount shared drvie
 ```
-# mount -t cifs //$saname/$sharename /mnt/share -o vers=3.0,credentials=/etc/smb.cred
+~ sudo mkdir /opt/myshare
 ```
-- Create a file in the share directory
+- Mount the File share
 ```
-# cd /mnt/share
-# touch testfile.txt
+~ sudo mount -t cifs //$saname/$sharename /opt/myshare -o vers=3.0,credentials=/etc/credfolder/smb.cred,dir_mode=0777,file_mode=0777,serverino
+```
+- Delete the credentials file which has the storage account key
+```
+~ sudo rm /etc/credfolder/smb.cred
+```
+
+10. Run the container by mounting file share
+```
+~ sudo docker run -it --mount type=bind,source=/opt/myshare,target=/mnt/myshare testacr02.azurecr.io/samples/demoapp /bin/bash
 
 ```
-- Validate that file is create on share from cloudshell using cli command
+- Create a file on on the mounted drive.
 ```
-az storage file list -s $sharename --account-key $key --account-name $saname --output table
+# cd /mnt/myshare
+# touch wer.txt
 ```
+
 ### NOTE
 1. For Clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
-2. Mounting an azure file share directory on container requires container to be run in "privilged" mode which is not recommended. ANother option is to mount File share on Host VM and   use Docker Bind Mount to mount share directory from VN host to the container. This option is explained in detail here. 
+
 
 

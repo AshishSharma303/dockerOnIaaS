@@ -1,18 +1,11 @@
-# Persistent Storage with Docker - Azure File Share
-s
+# Persistent Storage -Azure File Share directly mounted on Containers
 
 
 
 
 ## Introduction
-Azure File Share is service on Storage accounts which can be used to mount SMB network shares on Azure VMs. In this section, we will see how wec ant mount a persistent storage on a Docker container using Azure File Share.
 
-Azure File Share cn be mounted on Docker container in two ways:
-1. Mounting File Share on VM and mounting VM directory on Container
-2. Mounting File Share directly on Container
-
-In this document, we will cover the second option i.e. Mounting File Share directly on Container in details
-
+In this document, we will demonstrate the steps to mount Azure File Share directly on Docker Container. This covers creation of required azure components and makes use of AZ CLI & bash commands.
 
 
 ![v](/Credmanagement/secretmgmt.PNG)
@@ -166,6 +159,6 @@ az storage file list -s $sharename --account-key $key --account-name $saname --o
 ```
 ### NOTE
 1. For Clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
-2. Mounting an azure file share directory on container requires container to be run in "privilged" mode which is not recommended. ANother option is to mount File share on Host VM and   use Docker Bind Mount to mount share directory from VN host to the container. This option is explained in detail here. 
+2. Mounting an azure file share directory on container requires container to be run in "privilged" mode which is not recommended. Another option is to mount File share on Host VM and   use Docker Bind Mount to mount share directory from VN host to the container. This option is explained in detail [here](/persistentstorage/azurefileshare/mountviahost.md). 
 
 
