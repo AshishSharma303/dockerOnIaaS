@@ -1,13 +1,61 @@
-# Docker Host Image Creation
+# Prepare Docker-Engine for IaaS workload
 
-- [Docker Host Image Creation](#docker-host-image-creation)
-  - [Introduction](#introduction)
+- [Build Docker host](#Build-Docker-Host)
+  - [Install Docker components on VM ](#Install-Docker-components-on-VM )
+- [Insatll Docker components on VM](#Insatll-Docker-components-on-VM)
+  - [Introduction to Packer image for Docker Host](#introduction-to-Packer-image-for-Docker-Host)
     - [Scenario](#scenario)
     - [Approach](#approach)
   - [Reference](#reference)
 
 
-## Introduction
+## Build Docker Host
+There various ways to build Docker host. The two main methods are explained in this POC:
+  1. install Docker coponents on IaaS through AZ CLI's/Shell commands
+  2. Build Packer image for Docker host. 
+
+## Install Docker components on VM 
+Below provided method is for ubuntu VM, you can use any Docker supported flavor VM. Run the commands though Azure portal PowerShell:
+```
+$rg="kube-aks-rg01"
+$vnetname="kube-vnet01"
+$subneting="kube-subnet-ing01"
+$subnetagent="kube-subnet-agent01"
+$subnetnode="kube-subnet-node01"
+$akscluster="kube-private-cls"
+$vmname="kube-ubuntu-vm01"
+$vmsku="Standard_DS2_v2"
+$vmadmin="azureadmin"
+$vmpassword="Password@123"
+
+az group create --name $rg --location eastus2
+az network vnet create -g $RG -n $vnetName --address-prefixes 10.10.4.0/22
+az network vnet subnet create -g $RG --vnet-name $vnetname -n $subneting --address-prefix 10.10.4.0/24
+az network vnet subnet create -g $RG --vnet-name $vnetname -n $subnetagent --address-prefix 10.10.5.0/24
+az network vnet subnet create -g $RG --vnet-name $vnetname -n $subnetnode --address-prefix 10.10.6.0/24
+
+$vnetid=$(az network vnet show --resource-group $rg --name $vnetname --query id --output tsv)
+$subnetid=$(az network vnet subnet show --resource-group $rg --vnet-name $vnetname --name $subnetnode --query id --output tsv)
+$subnetidagent=$(az network vnet subnet show --resource-group $rg --vnet-name $vnetname --name $subnetagent --query id --output tsv)
+$subnetidnode=$(az network vnet subnet show --resource-group $rg --vnet-name $vnetname --name $subnetnode --query id --output tsv)
+
+# build Docker Host agent for VM "Ubuntu 18.04.4 LTS"
+az vm create --resource-group $rg --name $vmname --image UbuntuLTS --admin-username $vmadmin --admin-password $vmpassword --size $vmsku --subnet $subnetidnode --public-ip-address-dns-name "ubuntuvmpublicip"
+
+#SSH to the Ubuntu VM
+sudo apt-get update -y
+sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update -y
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo docker run hello-world
+```
+> Note: you can use HostConfig.sh script on ubuntu server for automation pourpose.
+
+
+## Introduction to Packer image for Docker Host
 
 Packer is an open source tool for creating identical machine images for multiple platforms from a single source configuration, it is lightweight, runs on every major operating system, and is highly performing, creating machine images for multiple platforms in parallel.
 
