@@ -5,7 +5,7 @@
 
 ## Introduction
 
-In this document, we will demonstrate the steps to mount Azure File on Containers via host using Docker Bind Mount functionality. Use of Bind Mounts to  Azure Managed Disks is covered [in this document](/persistentstorage/azuredisks/readme.md). This covers creation of required azure components and makes use of AZ CLI & bash commands.
+In this document, we will demonstrate the steps to mount Azure File on Containers via host using Docker Bind Mount functionality. Use of Bind Mounts to mount Azure Managed Disks is covered [in this document](/persistentstorage/azuredisks/readme.md).
 
 
 ![v](/persistentstorage/azurefileshare/mountviahost.PNG)
