@@ -56,14 +56,14 @@ cloudshellpip=$(dig +short myip.opendns.com @resolver1.opendns.com)
 az storage account network-rule add -g $rg --account-name $saname --ip-address $cloudshellpip
 az storage share create -n $sharename --account-key $key --account-name $saname
 ```
-3. Create a private endpoint for storage account from docker VM vnet
+4. Create a private endpoint for storage account from docker VM vnet
 ```
 subnetref=$(az network vnet subnet list --resource-group $vnetrg --vnet-name $vnetname --query "[?name=='$subnet'].id" -o tsv)
 vnetref=$(az network vnet show -g $vnetrg -n $vnetname | jq --raw-output -r '.id')
 
 peip=$(az network private-endpoint create -g $rg -n $sapename --subnet $subnetref --private-connection-resource-id $said --connection-name sa-pec01 -l $location --group-id "file" --query 'customDnsConfigs[0].ipAddresses[0]' -o tsv)
 ```
-4. Create Private DNS zone and HOST A record for mysql
+4. Create Private DNS zone and HOST A record for storage account
 ```
 
 az network private-dns zone create -g $rg -n privatelink.file.core.windows.net
@@ -71,7 +71,7 @@ az network private-dns link vnet create -g $rg -n MyDNSLink -z privatelink.file.
 az network private-dns record-set a add-record -g $rg -z privatelink.file.core.windows.net -n $saname -a $peip
 
 ```
-5. Create a key vault and add storage account name and key as a secret. For this POC, we will add cloudshell Public IP to Key Vault firewall just to upload secrets. This will not be required in actual deployements using CI/CD as agent pools VMs will be part of the virtual network.
+5. Create a key vault and add storage account name and key as a secret. For this POC, we will add cloudshell Public IP to Key Vault firewall just to upload secrets. This will not be required in actual deployments using CI/CD as agent pools VMs will be inside vnet.
 ```
 cloudshellpip=$(dig +short myip.opendns.com @resolver1.opendns.com)/32
 kvid=$(az keyvault create --location $location --name $kvname --resource-group $rg --default-action Deny --sku Standard --bypass AzureServices --query "id" -o tsv)
@@ -132,7 +132,7 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 ~ sauser=$(curl https://$kvname//secrets/$sanamesecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
 ~ sakey=$(curl https://$kvname//secrets/$sakeysecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
 ```
-- create a folder and cred file in it
+- create a folder and credential file in it
 ```
 ~  mkdir /etc/credfolder
 
@@ -144,7 +144,7 @@ EOF
 ~ sudo chmod 600 /etc/credfolder/smb.cred
 
 ```
-- Create a folder to mount shared drvie
+- Create a folder to mount shared drive
 ```
 ~ sudo mkdir /opt/myshare
 ```
@@ -169,7 +169,7 @@ EOF
 ```
 
 ### NOTE
-1. For Clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
+1. For clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
 2. Once the share is mounted, credential file which has storage account key can be deleted to avoid any password being saved on VM disk. To persist the share on VM, the above steps can be automated using bash script. This bash script then can be scheduled as cron jobs or rc.local file can be updated to include the bash script to be run on every reboot.
 
 
