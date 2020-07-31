@@ -8,7 +8,7 @@
 In this document, we will demonstrate the steps to mount Azure File Share directly on Docker Container. This covers creation of required azure components and makes use of AZ CLI & bash commands.
 
 
-![v](/Credmanagement/secretmgmt.PNG)
+![v](/persistentstorage/azurefileshare/directmount.PNG)
 
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.

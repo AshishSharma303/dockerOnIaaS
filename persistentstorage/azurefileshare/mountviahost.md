@@ -1,14 +1,14 @@
-# Persistent Storage -Azure File Share directly mounted on Containers
+# Persistent Storage -Azure File Share mounted on Containers using Docker Bind Mounts
 
 
 
 
 ## Introduction
 
-In this document, we will demonstrate the steps to mount Azure File on Containers via host using Docker Bind Mount functionality. Use of Bind Mounts to  Azure Managed Disks is covered [in this document](/persistentstorage/azuredisks/readme.md). This covers creation of required azure components and makes use of AZ CLI & bash commands.
+In this document, we will demonstrate the steps to mount Azure File on Containers via host using Docker Bind Mount functionality. Use of Bind Mounts to mount Azure Managed Disks is covered [in this document](/persistentstorage/azuredisks/readme.md).
 
 
-![v](/Credmanagement/secretmgmt.PNG)
+![v](/persistentstorage/azurefileshare/mountviahost.PNG)
 
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
@@ -103,24 +103,24 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 
 ```
 
-9. Configure container on IaaS VM to map filesahre
+9. Configure fileshare on VM
 
 - login to docker VM via serial console or ssh.
 
 
 - set the required variables on the VM
 ```
-# kvname="dk-poc-kv02.vault.azure.net"
-# saname="dkpocmysa012.file.core.windows.net"
-# sanamesecret="accountname"
-# sakeysecret="accountkey"
-# sharename="appdata"
+~ kvname="dk-poc-kv02.vault.azure.net"
+~ saname="dkpocmysa012.file.core.windows.net"
+~ sanamesecret="accountname"
+~ sakeysecret="accountkey"
+~ sharename="appdata"
 ```
 - Ping Key vault and Storage account DNS names to ensure it is resolving to privte endpoint.
 
 ```
-ping $kvname
-ping $saname
+~ ping $kvname
+~ ping $saname
 ```
 
 - Get the access token for Key Vault resource using the metadata URL
@@ -170,6 +170,7 @@ EOF
 
 ### NOTE
 1. For Clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
+2. Once the share is mounted, credential file which has storage account key can be deleted to avoid any password being saved on VM disk. To persist the share on VM, the above steps can be automated using bash script. This bash script then can be scheduled as cron jobs or rc.local file can be updated to include the bash script to be run on every reboot.
 
 
 
