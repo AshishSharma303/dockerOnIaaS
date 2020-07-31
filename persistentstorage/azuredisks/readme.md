@@ -82,9 +82,8 @@ UUID=33333333-3b3b-3c3c-3d3d-3e3e3e3e3e3e   /datadrive   ext4   defaults,nofail 
 - Validate the folder "mydir" is created on Host VM drive
 
 ```
-~ sudo docker run -it --mount source=data1,target=/mnt testacr02.azurecr.io/samples/demoapp /bin/bash
-~ cd mnt
-ls
+~ cd /mnt
+~ ls
 
 ```
 
