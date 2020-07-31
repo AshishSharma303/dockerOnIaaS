@@ -87,7 +87,7 @@ Create resource group.
 az group create -n $Dock_rg_name -l $location
 #endregion
 ```
-Create the virtual network with subnets for dokcer host deployment, loadbalancer, private link service, private endpoint and application gateway deployment.
+Create the virtual network with subnets for docker host deployment, loadbalancer, private link service, private endpoint and application gateway deployment.
 
 ```
 #region Virtual Network resource Deployment
@@ -233,7 +233,7 @@ az acr login -n <acr> -u <username> -p <password>
 docker push <acr>.azurecr.io/poc:apache2_mysql_ssl
 ```
 
->Note: The image needs to be in the exact naming convention of <acr>.azurecr.io/poc:apache2_mysql_ssl for the post deployment to work. Replace `<acr>` with container registry name, `<username>` with acr admin username and `<password>` with acr admin password
+>Note: The image needs to be in the exact naming convention of `<acr>.azurecr.io/poc:apache2_mysql_ssl` for the post deployment to work. Replace `<acr>` with container registry name, `<username>` with acr admin username and `<password>` with acr admin password
 
 Once the application image is pushed to azure container registry proceed to the post deployment configuration section
 
