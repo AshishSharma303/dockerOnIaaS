@@ -125,7 +125,7 @@ The below deployment json file refers an existing image definition version from 
     {
       "execute_command": "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
       "scripts": [
-        "myhostconfig.sh"
+        "HostConfig.sh"
       ],
       "type": "shell"
     }
