@@ -1,7 +1,10 @@
 # Docker on IaaS - Secret Management with Key Vault and MSI
 
 
-
+- [Introduction](#Introduction)
+- [Prerequisites](#Prerequisites)
+- [Steps](#Steps)
+- [Notes](#Notes)
 
 
 ## Introduction
@@ -37,6 +40,7 @@ mysqlpassword=$(openssl rand -base64 14)
 
 vmname="dkvm01"
 ```
+## Steps
 
 1. Create a Resource group for Key vault and MySql
 ```
