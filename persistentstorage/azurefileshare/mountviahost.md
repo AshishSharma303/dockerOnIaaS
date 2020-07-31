@@ -1,4 +1,4 @@
-# Persistent Storage -Azure File Share directly mounted on Containers
+# Persistent Storage -Azure File Share mounted on Containers using Docker Bind Mounts
 
 
 
