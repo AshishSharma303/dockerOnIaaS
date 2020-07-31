@@ -14,7 +14,7 @@ Using Bind Mounts, a file or directory on the host machine can be mounted into a
 
 
 
-![v](/persistentstorage/dockervolumes/bindmount.PNG)
+![v](/persistentstorage/azuredisks/bindmount.PNG)
 
 ## Prerequisites
 
