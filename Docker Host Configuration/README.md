@@ -51,7 +51,7 @@ sudo apt-get update -y
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 sudo docker run hello-world
 ```
-> Execute the HostConfig.sh script on ubuntu server.
+> Note: you can use HostConfig.sh script on ubuntu server for automation pourpose.
 
 
 ## Introduction to Packer image for Docker Host
