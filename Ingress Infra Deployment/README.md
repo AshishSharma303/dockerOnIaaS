@@ -20,7 +20,7 @@
 This article provides a walk thorough of how to configure ingress to a container environment hosted on virtual machine.
 Azure standard load balancer is used behind private link for internal access and azure application gateway is used for external access of the application.
 
-![v](/dockerOnIaaS/blob/master/attachments/Ingress_infra.png)
+![v](/attachments/Ingress_infra.png)
 
 ## Prerequisites
 
