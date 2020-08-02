@@ -1,6 +1,11 @@
 # Persistent Storage -Azure File Share directly mounted on Containers
 
 
+- [Introduction](#Introduction)
+- [Prerequisites](#Prerequisites)
+- [Steps](#Steps)
+- [Notes](#Notes)
+
 
 
 ## Introduction
@@ -12,7 +17,7 @@ In this document, we will demonstrate the steps to mount Azure File Share direct
 
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
-> 2. Azure VM with Docker installed and system managed identitiy enabled. Follow link to deploy Azure VM using packer.
+> 1. Azure VM with Docker installed and system managed identitiy enabled. Follow [link](/Docker%20Host%20Configuration/README.md) to deploy Azure VM using packer.
 > 3. Container Image with below components preinstalled
 > - JQ
 > - curl
@@ -33,7 +38,7 @@ sapename="pe-mysa-01"
 sharename="appdata"
 vmname="dkvm01"
 ```
-
+## Steps 
 1. Create a Resource group for Key vault and MySql
 ```
 az group create --name $rg --location $location
@@ -130,7 +135,7 @@ ping $saname
 ```
 # token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
 ```
-- Fetch the db user name and password from Key vault using the access token
+- Fetch the storage account name and Key vault using the access token
 ```
 # sauser=$(curl https://$kvname//secrets/$sanamesecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
 # sakey=$(curl https://$kvname//secrets/$sakeysecret?api-version=2016-10-01 -H "Authorization: Bearer $token" | jq --raw-output -r '.value')
