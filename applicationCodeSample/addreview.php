@@ -5,25 +5,27 @@ $username = "myadmin@myfirstmariadb";
 $password = "Password@123";
 $db = "sampledb";
 
-$dbconnect=mysqli_connect($hostname,$username,$password,$db);
+$postid = filter_input(INPUT_POST, 'id');
+$postname = filter_input(INPUT_POST, 'Name');
+$postquantity = filter_input(INPUT_POST, 'quantity');
 
-if ($dbconnect->connect_error) {
-  die("Database connection failed: " . $dbconnect->connect_error);
+$conn = mysqli_init();
+mysqli_ssl_set($conn, NULL, NULL, "/var/www/html/BaltimoreCyberTrustRoot.crt.pem", NULL, NULL);
+mysqli_real_connect($conn, $hostname, $username, $password, $db, 3306, MYSQLI_CLIENT_SSL);
+
+if (mysqli_connect_errno($conn)) {
+    die('Failed to connect to MySQL: ' . mysqli_connect_error());
 }
 
-if(isset($_POST['submit'])) {
-  $id=$_POST['id'];
-  $name=$_POST['name'];
-  $quantity=$_POST['quantity'];
+echo "Connected successfully";
 
-  $query = "INSERT INTO inventory (id, name, quantity)
-  VALUES ('$id', '$name', '$quantity')";
-
-    if (!mysqli_query($dbconnect, $query)) {
-        die('An error occurred. Your record has not been submitted.');
+$sql = "INSERT INTO inventory (id, name, quantity) VALUES ('$postid', '$postname', '$postquantity')";
+    if (mysqli_query($conn, $sql)) {
+        echo "New record created successfully";
     } else {
-      echo "Thanks for submiting the record.";
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
 
-}
+// Close the connection
+mysqli_close($conn);
 ?>
