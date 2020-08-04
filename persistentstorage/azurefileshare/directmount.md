@@ -162,7 +162,7 @@ ping $saname
 ```
 az storage file list -s $sharename --account-key $key --account-name $saname --output table
 ```
-### NOTE
+### NOTES
 1. For Clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
 2. Mounting an azure file share directory on container requires container to be run in "privilged" mode which is not recommended. Another option is to mount File share on Host VM and   use Docker Bind Mount to mount share directory from VN host to the container. This option is explained in detail [here](/persistentstorage/azurefileshare/mountviahost.md). 
 
