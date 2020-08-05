@@ -136,7 +136,7 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 ```
 
 
-### NOTE
+### NOTESS
 1. For Clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
 2. Docker containers support [native-secret-functionality](https://docs.docker.com/engine/swarm/secrets/) but only with Swarm Manager. This POC is executed for stand alone docker containers on VM by inheriting its managed service identity and use of Key Vaults to manage secrets.
 

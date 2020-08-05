@@ -100,11 +100,11 @@ az network vnet subnet create -n $Dock_lb_snet -g $Dock_rg_name --address-prefix
 az network vnet subnet create -n $Dock_appgw_snet -g $Dock_rg_name --address-prefixes $Dock_appgw_snet_cidr --vnet-name $Dock_vnet_name
 # Create private link service subnet
 az network vnet subnet create -n $Dock_pls_snet -g $Dock_rg_name --address-prefixes $Dock_pls_snet_cidr --vnet-name $Dock_vnet_name
-# Update subnet configuration for PLS
+# Update subnet configuration for PLS to choose a source ip from the subnet
 az network vnet subnet update -n $Dock_pls_snet -g $Dock_rg_name --vnet-name $Dock_vnet_name  --disable-private-link-service-network-policies
 # Create Private endpoint subnet
 az network vnet subnet create -n $Dock_pe_snet -g $Dock_rg_name --address-prefixes $Dock_pe_snet_cidr --vnet-name $Dock_vnet_name
-#update PE subnet
+# update PE subnet policy to deploy private endpoint inside it.
 az network vnet subnet update -n $Dock_pe_snet -g $Dock_rg_name --vnet-name $Dock_vnet_name --disable-private-endpoint-network-policies
 #endregion
 ```

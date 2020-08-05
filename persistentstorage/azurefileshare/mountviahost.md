@@ -172,7 +172,7 @@ EOF
 # touch wer.txt
 ```
 
-### NOTE
+### NOTES
 1. For clarity, Commands running on VM are prefixed by ~ and the commands running on Containers are prefixed by #
 2. Once the share is mounted, credential file which has storage account key can be deleted to avoid any password being saved on VM disk. To persist the share on VM, the above steps can be automated using bash script. This bash script then can be scheduled as cron jobs or rc.local file can be updated to include the bash script to be run on every reboot.
 
