@@ -2,7 +2,7 @@
 
 
 - [Introduction](#Introduction)
-- [About Privilged Mode](About%20Privilged%20Mode")
+- [About Privilged Mode](#About-Privilged-Mode)
 - [Prerequisites](#Prerequisites)
 - [Steps](#Steps)
 - [Notes](#Notes)
