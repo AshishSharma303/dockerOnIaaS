@@ -134,6 +134,7 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 sudo docker run --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH -it testacr02.azurecr.io/samples/demoapp /bin/bash
 
 ```
+10. Configure share on the container.
 - set the required variables inside the container
 ```
 # kvname="dk-poc-kv02.vault.azure.net"
