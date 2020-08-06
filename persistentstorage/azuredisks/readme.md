@@ -18,7 +18,7 @@ Using Bind Mounts, a file or directory on the host machine can be mounted into a
 
 ## Prerequisites
 
-> 1. Azure VM with Docker installed and system managed identitiy enabled. Follow [link](/Docker%20Host%20Configuration/README.md) to deploy Azure VM using packer.
+> 1. A Azure VM with Docker installed and system managed identitiy enabled. Follow [link](/Docker%20Host%20Configuration/README.md) to deploy Azure VM using packer.
 > 2. Existing Container Images pulled from Azure Continer Registry.
 > 3. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
 > 4. Update the values for below variables as required 
@@ -72,7 +72,7 @@ UUID=33333333-3b3b-3c3c-3d3d-3e3e3e3e3e3e   /datadrive   ext4   defaults,nofail 
 ~ sudo docker run -it --mount type=bind,source=/datadrive,target=/mnt testacr02.azurecr.io/samples/demoapp /bin/bash
 
 ```
-
+> If you don't have access to the ACR use nginx:latest image to use validate the configuraitons. This POC does not require any specific image to be attached. 
 - Create a new directory on the mounted path in the container and then stop container by exit or stopping
 
 ```

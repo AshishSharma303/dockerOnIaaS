@@ -17,8 +17,8 @@ In this document, we will demonstrate the steps to mount Azure File Share direct
 
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
-> 1. Azure VM with Docker installed and system managed identitiy enabled. Follow [link](/Docker%20Host%20Configuration/README.md) to deploy Azure VM using packer.
-> 3. Container Image with below components preinstalled
+> 1. Azure VM with Docker installed and system managed identitiy enabled. Follow [link](/Docker%20Host%20Configuration/README.md) to deploy Azure VM using packer or shell commands.
+> 3. Container Image with below components pre-installed
 > - JQ
 > - curl
 > - cifsutil
@@ -65,7 +65,7 @@ az storage share create -n $sharename --account-key $key --account-name $saname
 ```
 subnetref=$(az network vnet subnet list --resource-group $vnetrg --vnet-name $vnetname --query "[?name=='$subnet'].id" -o tsv)
 vnetref=$(az network vnet show -g $vnetrg -n $vnetname | jq --raw-output -r '.id')
-
+> disable netwwork policy if its not done for the PE subnet: az network vnet subnet update --name $subnetagent --resource-group $rg --vnet-name $vnetname --disable-private-endpoint-network-policies true
 peip=$(az network private-endpoint create -g $rg -n $sapename --subnet $subnetref --private-connection-resource-id $said --connection-name sa-pec01 -l $location --group-id "file" --query 'customDnsConfigs[0].ipAddresses[0]' -o tsv)
 ```
 4. Create Private DNS zone and HOST A record for mysql
