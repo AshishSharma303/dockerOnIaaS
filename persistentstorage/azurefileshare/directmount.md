@@ -16,6 +16,12 @@ In this document, we will demonstrate the steps to mount Azure File Share direct
 ## About Privilged Mode 
 
 By default, Docker containers are “unprivileged”. However, there is an option to run containers in privileged mode using "--privilged" switch. Running a container in privileged mode allow containers to access the host devices and provide level of access to host as processes running outside containers on the host. Some of the examples include running docker deamon inside containers and direct host hardware access from container. Privileged mode is considered to be insecure and risky as it enables root level access to containers on host, as a result increasing potential attack surface. Therefore, it is not advisable to use privileged mode.
+In case if it is absolutely needed to mount a share directly on container, it is recommended to use ["--cap-add"](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) option in "docker run" to add granualar level host capabilities on container. If we try to mount file share on container without either privilged mode or capability option, it gives error "Unable to apply new capability set" while mounting.
+
+In the below example we will see two option to mount fileshare directly on to the container
+
+1. With "--privileged" mode
+2. Using "--cap-add" option
 
 ![v](/persistentstorage/azurefileshare/directmount.PNG)
 
@@ -112,14 +118,21 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 
 ```
 
-9. Configure container on IaaS VM to map filesahre
+9. Run the container with any of the below options i.e 9a or 9b
 
 - login to docker VM via serial console or ssh.
 - Run the container in privileged modeand login to bash shell
+
+9a. Use "--privilged" switch
 ```
 ~ sudo docker run --privileged -it testacr02.azurecr.io/samples/demoapp /bin/bash
 ```
+9b. Use "--cap-add" option and add two capabilites. i.e. SYS_ADMIN and DAC_READ_SEARCH
 
+```
+sudo docker run --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH -it testacr02.azurecr.io/samples/demoapp /bin/bash
+
+```
 - set the required variables inside the container
 ```
 # kvname="dk-poc-kv02.vault.azure.net"
@@ -146,10 +159,10 @@ ping $saname
 ```
 - create a cred file by running below
 ```
-# cat << EOF > /etc/smb.cred
-  username=$sauser
-  password=$sakey
-  EOF
+cat << EOF > /etc/smb.cred
+username=$sauser
+password=$sakey
+EOF
 
 ```
 - Mount the share on required directory on Container
