@@ -15,13 +15,14 @@ In this document, we will demonstrate the steps to mount Azure File Share direct
 
 ## About Privilged Mode 
 
-By default, Docker containers are “unprivileged”. However, there is an option to run containers in privileged mode using "--privilged" switch. Running a container in privileged mode allow containers to access the host devices and provide level of access to host as processes running outside containers on the host. Some of the examples include running docker deamon inside containers and direct host hardware access from container. Privileged mode is considered to be insecure and risky as it enables root level access to containers on host, as a result increasing potential attack surface. Therefore, it is not advisable to use privileged mode.
+By default, Docker containers are “unprivileged”. However, there is an option to run containers in privileged mode using "--privilged" switch. Running a container in privileged mode allow containers to access the host devices and provide level of access to containers on host similar to the processes running outside containers. Some of the examples include running docker deamon inside containers and direct host hardware access from container. Privileged mode is considered to be insecure and risky as it enables root level access to containers on host, as a result increasing potential attack surface. Therefore, it is not advisable to use privileged mode.
 In case if it is absolutely needed to mount a share directly on container, it is recommended to use ["--cap-add"](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities) option in "docker run" to add granualar level host capabilities on container. If we try to mount file share on container without either privilged mode or capability option, it gives error "Unable to apply new capability set" while mounting.
 
 In the below example we will see two option to mount fileshare directly on to the container
 
 1. With "--privileged" mode
 2. Using "--cap-add" option
+
 
 ![v](/persistentstorage/azurefileshare/directmount.PNG)
 
@@ -148,7 +149,7 @@ ping $kvname
 ping $saname
 ```
 
-- Get the access token for Key Vault resource using the metadata URL
+- Get the access token for Key Vault resource using the metadata URL. THe metadata URL by default uses system managed identity of VM to fetch the token. Hence, no additional arguement is required to specify MSI object ID.
 ```
 # token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
 ```

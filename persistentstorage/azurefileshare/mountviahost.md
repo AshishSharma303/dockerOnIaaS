@@ -127,7 +127,7 @@ az keyvault set-policy --name $kvname --secret-permissions "get" --object-id $sp
 ~ ping $saname
 ```
 
-- Get the access token for Key Vault resource using the metadata URL
+- Get the access token for Key Vault resource using the metadata URL. THe metadata URL by default uses system managed identity of VM to fetch the token. Hence, no additional arguement is required to specify MSI object ID.
 ```
 ~ token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq --raw-output -r '.access_token')
 ```
