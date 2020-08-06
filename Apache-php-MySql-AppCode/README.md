@@ -7,6 +7,7 @@
     - [PHP Code](#php-code)
     - [Apache Site Configuration](#apache-site-configuration)
   - [Tying It All Together](#tying-it-all-together)
+  - [Dockerfile usage](#dockerfile-usage)
   - [Reference](#reference)
 
 ## Introduction
@@ -135,6 +136,16 @@ FROM maanan/external:apache2_mysql_ssl
 COPY index.html /var/www/poc
 COPY conn.php /var/www/poc
 ```
+
+## Dockerfile usage
+
+The docker file takes ubunut:18.04 has base image and installs apache2, php and php library like mysqli on a container image without copying any application artifacts into the image. It gives us the flexibility of using bind mounts to do local dev work.
+Once the container image is created, it can be used by mounting appropriate directories to the running container as per application definition and apache configuration.
+
+```
+docker run -d -p 443:443 -v D:\apacheconfig\:/etc/apache2/sites-available -v D:\site-root-directory:/var/www/poc  apache2-pph-test
+```
+Apache configuration(`000-default.conf`) needs to be mounted on `/etc/apache2/sites-available`.
 
 ## Reference
 
