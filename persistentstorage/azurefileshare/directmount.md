@@ -2,6 +2,7 @@
 
 
 - [Introduction](#Introduction)
+- [About Privilged Mode](#AboutPrivilgedMode)
 - [Prerequisites](#Prerequisites)
 - [Steps](#Steps)
 - [Notes](#Notes)
@@ -12,6 +13,9 @@
 
 In this document, we will demonstrate the steps to mount Azure File Share directly on Docker Container. This covers creation of required azure components and makes use of AZ CLI & bash commands.
 
+## About Privilged Mode 
+
+By default, Docker containers are “unprivileged”. However, there is an option to run containers in privileged mode using "--privilged" switch. Running a container in privileged mode allow containers to access the host devices and provide level of access to host as processes running outside containers on the host. Some of the examples include running docker deamon inside containers and direct host hardware access from container. Privileged mode is considered to be insecure and risky as it enables root level access to containers on host, as a result increasing potential attack surface. Therefore, it is not advisable to use privileged mode.
 
 ![v](/persistentstorage/azurefileshare/directmount.PNG)
 
