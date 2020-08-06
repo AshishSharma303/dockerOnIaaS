@@ -7,6 +7,7 @@
     - [PHP Code](#php-code)
     - [Apache Site Configuration](#apache-site-configuration)
   - [Tying It All Together](#tying-it-all-together)
+  - [Dockerfile usage](#dockerfile-usage)
   - [Reference](#reference)
 
 ## Introduction
@@ -16,8 +17,16 @@ In the backend its using mysqli to connect to a data base and insert records fet
 
 ## Code Walk Through
 
-### HTML Code
+Apache install code
+```
+Apache install
+sudo apt install apache2
+sudo ufw app list
+# know ur IP
+curl -4 icanhazip.com
+```
 
+### HTML Code
 An html code block is used to get user inputs and pass the values to a php script.
 The html file is named `index.html` and is stored `/var/www/poc`.
 
@@ -43,6 +52,18 @@ dbpassword : <input type="password" name="dbpassword"><br><br>
 With the user inputs the html file is calling `conn.php` file located in the same directory with a POST method to insert data to a database.
 
 ### PHP Code
+
+PHP Install code
+```
+PHP insatall:
+apt -y install software-properties-common -y
+add-apt-repository ppa:ondrej/php -y
+apt-get update -y
+apt -y install php7.4
+apt-get install -y php7.4-{bcmath,bz2,intl,gd,mbstring,mysql,zip}
+sudo apt-get install php7.4-mysql
+```
+> NOte: insure mysqli.ini file has been loaded to directory "/etc/php/7.4/mods-available/" 
 
 The PHP code is stored inside the file conn.php at `/var/www/poc` and connects to a database using mysqli depending on the user input. If ssl is enforced on azure database for MySql then mysqli needs to connect to the database server securely. The root certificate required to securely connect to the database server is stored at `/var/www/html` and is name BaltimoreCyberTrustRoot.crt.pem. This certificate can be downloaded from this [link](https://docs.microsoft.com/en-us/azure/mysql/howto-configure-ssl). conn.php doesnt do a check whether database exists or not. It tries to write data to a specific database(pocdb) once it connects to the database server. The code checks for a table named dockerpoc and if it's not there, it will create it programmatically.
 
@@ -115,6 +136,16 @@ FROM maanan/external:apache2_mysql_ssl
 COPY index.html /var/www/poc
 COPY conn.php /var/www/poc
 ```
+
+## Dockerfile usage
+
+The docker file takes ubunut:18.04 has base image and installs apache2, php and php library like mysqli on a container image without copying any application artifacts into the image. It gives us the flexibility of using bind mounts to do local dev work.
+Once the container image is created, it can be used by mounting appropriate directories to the running container as per application definition and apache configuration.
+
+```
+docker run -d -p 443:443 -v D:\apacheconfig\:/etc/apache2/sites-available -v D:\site-root-directory:/var/www/poc  apache2-pph-test
+```
+Apache configuration(`000-default.conf`) needs to be mounted on `/etc/apache2/sites-available`.
 
 ## Reference
 

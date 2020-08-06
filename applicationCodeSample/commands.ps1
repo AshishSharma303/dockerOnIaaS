@@ -1,3 +1,24 @@
+#Docker Commands for building an custom image from Doscker commit 
+docker pull ubuntu
+docker run --name ubuntucontainer ubuntu
+docker ps -a
+docker run -it --name ubuntucontainer ubuntu
+# inside the container run following commands:
+# apt install curl -y
+# curl --version
+# apt install -y cifs-utils
+# sudo apt-get install jq -y
+# Ctrl+p and Ctrl+Q -> detach without terminating
+docker container
+docker ps
+docker stop b125aaa0e298
+docker ps -a
+docker commit b125aaa0e298 ubuntu_jq
+docker images
+docker run -it --name ubuntutest ubuntu_jq
+
+
+
 # Docker Build code:
 docker.exe build -t apache_php_image:v2 .
 docker.exe rmi apache_php_image:v2 --force
@@ -15,8 +36,10 @@ sudo apt-get install php7.4-mysql
 # insure mysqli.ini file has been loaded to directory "/etc/php/7.4/mods-available/" 
 
 #Apache install
-Apache install
 sudo apt install apache2
+sudo ufw allow ssh
+sudo ufw allow 80
+sudo ufw allow 443
 sudo ufw app list
 curl -4 icanhazip.com
 
