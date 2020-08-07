@@ -14,7 +14,7 @@ Using Bind Mounts, a file or directory on the host machine can be mounted into a
 
 
 
-![v](/persistentstorage/azuredisks/bindmount.PNG)
+![v](/03-persistentstorage/azuredisks/bindmount.PNG)
 
 ## Prerequisites
 

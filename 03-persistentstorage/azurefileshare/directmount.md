@@ -24,7 +24,7 @@ In the below example we will see two option to mount fileshare directly on to th
 2. Using "--cap-add" option
 
 
-![v](/persistentstorage/azurefileshare/directmount.PNG)
+![v](/03-persistentstorage/azurefileshare/directmount.PNG)
 
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
