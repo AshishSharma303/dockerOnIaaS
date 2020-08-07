@@ -12,7 +12,7 @@
 This document illustrates how to manage and use secrets with Docker containers on IaaS VMs. Docker containers running on a virtual machine genrally inherit the properties of virtual machine. Managed service Identity which is assigned on Azure VM can be used by deployed containers to fetch application secrets from Key Vault using Code. With the use of Managed service Identity, application/ containers can access storage account data or key vault secrets without the need of SPNs.
 
 
-![v](/Credmanagement/secretmgmt.PNG)
+![v](/01-Cred Management/secretmgmt.PNG)
 
 ## Prerequisites
 > 1. Use Azure cloud PowerShell or az cli from local machine connected to the azure subscription to run below AZ cli commands.
