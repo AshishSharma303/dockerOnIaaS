@@ -2,12 +2,12 @@
 Docker engine POC on Azure IaaS
 
 
-Docker on IaaS workload POC high-level agenda:
-    - VM injected inside a Vnet, and cover all of the actual requirements using secure private access.
-    - Docker engine on IaaS VM - use Shell/Packer utility. 
-    - Azure DB PaaS service.
-    - Secure Backend Access to Azure resources using PEP.
-    - Secure deployment of container into the hosting VM.
+##   Docker on IaaS workload POC high-level agenda:
+- VM injected inside a Vnet, and cover all of the actual requirements using secure private access.
+- Docker engine on IaaS VM - use Shell/Packer utility. 
+- Azure DB PaaS service.
+- Secure Backend Access to Azure resources using PEP.
+- Secure deployment of container into the hosting VM.
 
 Details of the POC's are below:
 0. Docker Host deployment
