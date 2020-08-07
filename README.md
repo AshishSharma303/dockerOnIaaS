@@ -12,7 +12,7 @@ Docker engine POC on Azure IaaS
 ---
 
 ### Details of the POC's are below:
-0. Docker Host deployment
+0. [Docker Host deployment](#00-Docker-Host-Configuration)
     - Deploy Docker host though CLI's
     - Deploy Docker host though Packer utility.
 
@@ -30,7 +30,7 @@ Docker engine POC on Azure IaaS
     - Azure files.
         - Privileged mode "enable/disable" 
     - Docker volumes. 
-      
+
 4. Application code
     - Apache/PHP bases FE
     - MySQL PaaS DB
