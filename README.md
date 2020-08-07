@@ -1,28 +1,30 @@
 # dockerOnIaaS
 Docker engine POC on Azure IaaS
 
-The following is the scope of the POC
 
-
-1. VM is only accessible through secure FE
+Docker on IaaS workload POC high-level agenda:
     - VM injected inside a Vnet, and cover all of the actual requirements using secure private access.
-    - Docker engine on IaaS VM - use Packer. 
-2. Secure conenct with PaaS service
-    - Secure Backend Access to Azure resources using PEP
+    - Docker engine on IaaS VM - use Shell/Packer utility. 
     - Azure DB PaaS service.
-3. Container repo and deployment considerations
-    - Secure storage of container images
-    - Secure deployment of container into the hosting VM
-4. Creds managemnet
+    - Secure Backend Access to Azure resources using PEP.
+    - Secure deployment of container into the hosting VM.
+
+Details of the POC's are below:
+1. Creds managemnet
     - secret access from KV.
     - KV access though MSI, SP
-5. Ingres/Egress
+2. Ingres/Egress
     - Ingress (External "appGw" and Internal "Direct PE")
-6. Persistent Storage mapping
-    - Azure files.
+    - secure access to BE PaaS service (Azure MySQL)
+    - TLS considrations (FE and BE with self-sign certs).
+3. Persistent Storage mapping
     - Azure disks.
-7. Security
-    - Privileged mode "disable"
-    - TLS considrations.
-8. Application code
+    - Azure files.
+        - Privileged mode "enable/disable" 
+    - Docker volumes.   
+4. Application code
+    - Apache/PHP bases FE
+    - MySQL PaaS DB
+    - App and BE self-sign certs.
+    - Dockerfile to build the docker container   
 
