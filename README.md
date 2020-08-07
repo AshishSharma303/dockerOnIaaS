@@ -10,6 +10,9 @@ Docker on IaaS workload POC high-level agenda:
     - Secure deployment of container into the hosting VM.
 
 Details of the POC's are below:
+0. Docker Host deployment
+    - Deploy Docker host though CLI's
+    - Deploy Docker host though Packer utility.
 1. Creds managemnet
     - secret access from KV.
     - KV access though MSI, SP
