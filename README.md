@@ -10,6 +10,7 @@ Docker engine POC on Azure IaaS
 - Secure deployment of container into the hosting VM.
 
 Details of the POC's are below:
+
 0. Docker Host deployment
     - Deploy Docker host though CLI's
     - Deploy Docker host though Packer utility.
