@@ -35,5 +35,16 @@ Docker engine POC on Azure IaaS
     - Apache/PHP bases FE
     - MySQL PaaS DB
     - App and BE self-sign certs.
-    - Dockerfile to build the docker container   
+    - Dockerfile to build the docker container  
 
+<br>
+<br>
+<br>
+<br>
+<br>
+
+---
+### POC Outcomes:
+Below table provides high level information on the outcomes of the docker on IaaS POC's executed:
+![v](/attachments/findings.png)
+01 Table: findings 
