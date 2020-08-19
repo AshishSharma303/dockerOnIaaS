@@ -204,7 +204,7 @@ az network private-dns link vnet create -g $Dock_rg_name -n acrnetlink -z privat
 ### Docker Host Deployment
 
 Once the base infrastructure is deployed, its time to prepare the host.
-To prepare the host from a golden image kept in a shared image gallery, packer can be used. To prepare the image from packer follow this [link](https://github.com/AshishSharma303/dockerOnIaaS/tree/master/Docker%20Host%20Configuration#prepare-docker-engine-for-iaas-workload). Modify the [HostConfig.sh]() to incorporate installation of az cli, azr login, docker pull and docker run commands.
+To prepare the host from a golden image kept in a shared image gallery, packer can be used. To prepare the image from packer follow this [link](https://github.com/AshishSharma303/dockerOnIaaS/tree/master/Docker%20Host%20Configuration#prepare-docker-engine-for-iaas-workload). Modify the [HostConfig.sh](https://github.com/AshishSharma303/dockerOnIaaS/blob/master/00-Docker%20Host%20Configuration/HostConfig.sh) to incorporate installation of az cli, azr login, docker pull and docker run commands.
 
 For simplicity purpose, in this demo we will proceed with the vm creation using a market place image and az cli.
 ```
